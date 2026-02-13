@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Valentine Nikki ❤️</title>
+<title>For My Love Nikki ❤️</title>
 
 <style>
 body {
@@ -13,102 +13,214 @@ body {
     background: linear-gradient(to bottom, #ff758c, #ff7eb3);
     font-family: 'Segoe UI', sans-serif;
     text-align: center;
+    color: white;
+    cursor: pointer;
 }
 
+/* Flash */
+.flash {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+/* Start Button */
+.start-btn {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 40px;
+    font-size: 20px;
+    background: white;
+    color: hotpink;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+/* Hidden */
+.hidden { display: none; }
+
+/* Main Content */
 .container {
     position: relative;
-    top: 40vh;
-    color: white;
+    top: 35vh;
 }
 
-h1 {
-    font-size: 60px;
-    animation: glow 2s infinite alternate;
+.typing {
+    font-size: 35px;
+    border-right: 3px solid white;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 4s steps(20,end) forwards, blink 0.8s infinite;
 }
 
-p {
-    font-size: 24px;
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
 }
 
-@keyframes glow {
-    from { text-shadow: 0 0 10px white, 0 0 20px pink; }
-    to { text-shadow: 0 0 20px red, 0 0 40px hotpink; }
+@keyframes blink {
+    50% { border-color: transparent }
 }
 
+/* Falling Nikki Hearts */
 .heart {
     position: absolute;
-    color: red;
-    font-size: 24px;
+    font-size: 20px;
     animation: fall linear infinite;
 }
 
 @keyframes fall {
-    0% {
-        transform: translateY(-10vh);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(110vh);
-        opacity: 0;
-    }
+    0% { transform: translateY(-10vh); opacity:1; }
+    100% { transform: translateY(110vh); opacity:0; }
 }
 
-/* Music Button */
-.music-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: white;
-    color: hotpink;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
+/* Big Heart */
+.big-heart {
+    position: absolute;
+    font-size: 60px;
+    animation: pop 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes pop {
+    0% { transform: scale(0); opacity:1; }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); opacity:0; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>Happy Valentine's Day Nikki ❤️</h1>
-    <p>You are my heart, my life, my everything 💕</p>
+<div class="flash" id="flash"></div>
+
+<button class="start-btn" id="holdBtn">💖 Click & Hold 💖</button>
+
+<div class="container hidden" id="mainContent">
+    <h1>Happy Valentine's Day 💖</h1>
+    <div class="typing">I Love You Nikki ❤️</div>
 </div>
 
-<!-- Background Music -->
 <audio id="bgMusic" autoplay loop>
     <source src="Song.mp3" type="audio/mpeg">
 </audio>
 
-<button class="music-btn" onclick="toggleMusic()">🎵 Play / Pause</button>
-
 <script>
+
+const holdBtn = document.getElementById("holdBtn");
+const mainContent = document.getElementById("mainContent");
+const flash = document.getElementById("flash");
+let holdTimer;
+
+// Hold Start
+holdBtn.addEventListener("mousedown", () => {
+    holdTimer = setTimeout(() => {
+        holdBtn.classList.add("hidden");
+        mainContent.classList.remove("hidden");
+        askQuestion();
+    }, 2000);
+});
+
+holdBtn.addEventListener("mouseup", () => clearTimeout(holdTimer));
+
+// Nikki Rain
 function createHeart() {
     const heart = document.createElement("div");
     heart.classList.add("heart");
-    heart.innerHTML = "❤️";
+    heart.innerHTML = "💖 Nikki 💖";
     heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    heart.style.animationDuration = (Math.random()*3+2)+"s";
     document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, 5000);
+    setTimeout(()=>heart.remove(),5000);
 }
+setInterval(createHeart,300);
 
-setInterval(createHeart, 300);
+// Click Effect
+const emojis=["❤️","💖","💋","💘","💝","💞","😘","🥰"];
 
-// Music Toggle
-const music = document.getElementById("bgMusic");
+document.addEventListener("click",function(e){
+    if(holdBtn.classList.contains("hidden")){
 
-function toggleMusic() {
-    if (music.paused) {
-        music.play();
-    } else {
-        music.pause();
+        // Vibration
+        if(navigator.vibrate){
+            navigator.vibrate([100,50,200]);
+        }
+
+        // Big Heart
+        const bigHeart=document.createElement("div");
+        bigHeart.classList.add("big-heart");
+        bigHeart.innerHTML=emojis[Math.floor(Math.random()*emojis.length)];
+        bigHeart.style.left=(e.clientX-30)+"px";
+        bigHeart.style.top=(e.clientY-30)+"px";
+        document.body.appendChild(bigHeart);
+        setTimeout(()=>bigHeart.remove(),1000);
+
+        // Flash
+        flash.style.opacity="0.8";
+        setTimeout(()=>flash.style.opacity="0",100);
     }
+});
+
+// Proposal Popup
+function askQuestion(){
+
+    const teaseMessages=[
+        "Arey soch lo 😜",
+        "Itna bhi kya attitude 💕",
+        "Dil tod dogi kya? 💔",
+        "Pakka No? 🤭",
+        "Last chance Nikki 😘",
+        "Sach me bhaag rahi ho? 😂",
+        "Yes hi dabana padega 😈"
+    ];
+
+    const popup=document.createElement("div");
+    popup.style.position="fixed";
+    popup.style.top="50%";
+    popup.style.left="50%";
+    popup.style.transform="translate(-50%,-50%)";
+    popup.style.background="white";
+    popup.style.color="hotpink";
+    popup.style.padding="30px";
+    popup.style.borderRadius="20px";
+    popup.style.textAlign="center";
+    popup.style.zIndex="1000";
+
+    popup.innerHTML=`
+        <h2>💍 Nikki, Will You Be Mine Forever? 💖</h2>
+        <p id="teaseText">Choose wisely 😜</p>
+        <button id="yesBtn" style="padding:10px 20px; margin:10px; border:none; border-radius:20px; background:hotpink; color:white;">Yes 💖</button>
+        <button id="noBtn" style="padding:10px 20px; margin:10px; border:none; border-radius:20px; background:gray; color:white; position:relative;">No 😜</button>
+    `;
+
+    document.body.appendChild(popup);
+
+    const noBtn=document.getElementById("noBtn");
+    const teaseText=document.getElementById("teaseText");
+
+    noBtn.addEventListener("mouseover",()=>{
+        const x=Math.random()*200-100;
+        const y=Math.random()*200-100;
+        noBtn.style.transform=`translate(${x}px,${y}px)`;
+        teaseText.innerText=teaseMessages[Math.floor(Math.random()*teaseMessages.length)];
+    });
+
+    document.getElementById("yesBtn").addEventListener("click",()=>{
+        popup.innerHTML="<h2>Yaaay 💖 I Love You Nikki 😘💍</h2>";
+        if(navigator.vibrate){
+            navigator.vibrate([200,100,300]);
+        }
+    });
 }
+
 </script>
 
 </body>
