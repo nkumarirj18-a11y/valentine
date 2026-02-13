@@ -10,7 +10,7 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+    background: linear-gradient(to bottom, #ff758c, #ff7eb3);
     font-family: 'Segoe UI', sans-serif;
     text-align: center;
 }
@@ -52,6 +52,20 @@ p {
         opacity: 0;
     }
 }
+
+/* Music Button */
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    color: hotpink;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
 </style>
 </head>
 
@@ -61,6 +75,13 @@ p {
     <h1>Happy Valentine's Day Nikki ❤️</h1>
     <p>You are my heart, my life, my everything 💕</p>
 </div>
+
+<!-- Background Music -->
+<audio id="bgMusic" autoplay loop>
+    <source src="Song.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music-btn" onclick="toggleMusic()">🎵 Play / Pause</button>
 
 <script>
 function createHeart() {
@@ -77,6 +98,17 @@ function createHeart() {
 }
 
 setInterval(createHeart, 300);
+
+// Music Toggle
+const music = document.getElementById("bgMusic");
+
+function toggleMusic() {
+    if (music.paused) {
+        music.play();
+    } else {
+        music.pause();
+    }
+}
 </script>
 
 </body>
